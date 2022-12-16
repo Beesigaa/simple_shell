@@ -58,9 +58,9 @@ int find_builtin(info_t *info)
 		{"history", _myhistory},
 		{"setenv", _mysetenv},
 		{"unsetenv", _myunsetenv},
-		{"cd", _mycd}, 
+		{"cd", _mycd},
 		{"s", _myalias},
-		{NULL , NULL}
+		{NULL, NULL}
 	};
 	for (i = 0; builtintbl[i].type; i++)
 		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
@@ -79,6 +79,7 @@ int find_builtin(info_t *info)
 void find_cmd(info_t *info)
 {
 	char *path = NULL;
+	int i, k;
 
 	info->path = info->argv[0];
 	if (info->linecount_flag == 1)
@@ -119,7 +120,6 @@ void fork_cmd(info_t *info)
 	pid_t child_pid;
 
 	child_pid = fork();
-
 	if (child_pid == -1)
 	{
 		/* TODO: PUT ERROR FUNCTION */
@@ -127,13 +127,14 @@ void fork_cmd(info_t *info)
 		return;
 	}
 	if (child_pid == 0)
+	{
 		if (execve(info->path, info->argv, get_environ(info)) == -1)
-				{
-					free_info(info, 1);
-					if (errno == EACCES)
-						exit(126);
-					exit(1);
-				}
+		{
+			free_info(info, 1);
+			if (errno == EACCES)
+				exit(126);
+			exit(1);
+		}
 		/* TODO: PUT ERROR FUNCTION */
 	}
 	else
