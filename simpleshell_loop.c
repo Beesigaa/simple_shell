@@ -31,13 +31,13 @@ int hsh(terminfo *info, char **av)
 	}
 	write_history(info);
 	free_info(info, 1);
-	if (!interactive(info) && info->status)
-		exit(info->status);
+	if (!interactive(info) && info->stat_)
+		exit(info->stat_);
 	if (builtin_ret == -2)
 	{
-		if (info->err_num == -1)
-			exit(info->status);
-		exit(info->err_num);
+		if (info->num_err == -1)
+			exit(info->stat_);
+		exit(info->num_err);
 	}
 	return (builtin_ret);
 }
@@ -87,7 +87,7 @@ void find_cmd(terminfo *info)
 	char *path = NULL;
 	int i, k;
 
-	info->path = info->argv[0];
+	info->path = info->arg_v[0];
 	if (info->flag_linecount == 1)
 	{
 		info->count_line++;
@@ -99,7 +99,7 @@ void find_cmd(terminfo *info)
 	if (!k)
 		return;
 
-	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
+	path = find_path(info, _getenv(info, "PATH="), info->arg_v[0]);
 	if (path)
 	{
 		info->path = path;
@@ -108,11 +108,11 @@ void find_cmd(terminfo *info)
 	else
 	{
 		if ((interactive(info) || _getenv(info, "PATH=")
-			|| info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
+			|| info->arg_v[0][0] == '/') && is_cmd(info, info->arg_v[0]))
 			fork_cmd(info);
 		else if (*(info->arg) != '\n')
 		{
-			info->status = 127;
+			info->stat_ = 127;
 			print_error(info, "not found\n");
 		}
 	}
@@ -136,7 +136,7 @@ void fork_cmd(terminfo *info)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(info->path, info->argv, get_environ(info)) == -1)
+		if (execve(info->path, info->arg_v, get_environ(info)) == -1)
 		{
 			free_info(info, 1);
 			if (errno == EACCES)

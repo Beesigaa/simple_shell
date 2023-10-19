@@ -6,7 +6,7 @@
  */
 int interactive(terminfo *inf)
 {
-	return (isatty(STDIN_FILENO) && inf->readfd <= 2);
+	return (isatty(STDIN_FILENO) && inf->readfd_ <= 2);
 }
 
 /**

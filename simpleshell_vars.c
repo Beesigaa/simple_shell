@@ -22,9 +22,9 @@ int _ischain(terminfo *inf, char *buf, size_t *p_add)
 		j++;
 		inf->cmd_buf_type = CMD_AND;
 	}
-	else if (buf[j] == ';') /* found end of this command */
+	else if (buf[j] == ';')
 	{
-		buf[j] = 0; /* replace semicolon with null */
+		buf[j] = NULL;
 		inf->cmd_buf_type = CMD_CHAIN;
 	}
 	else
@@ -49,15 +49,15 @@ void _checkchain(terminfo *inf, char *buf, size_t *p_add, size_t s, size_t len)
 
 	if (inf->cmd_buf_type == CMD_AND)
 	{
-		if (inf->status)
+		if (inf->stat_)
 		{
 			buf[s] = 0;
 			j = len;
 		}
 	}
-	if (inf->cmd_buf_type == CMD_OR)
+	if (inf->buf_type_cmd == CMD_OR)
 	{
-		if (!inf->status)
+		if (!inf->stat_)
 		{
 			buf[s] = 0;
 			j = len;
@@ -80,17 +80,17 @@ int rep_al(terminfo *inf)
 
 	for (n = 0; n < 10; n++)
 	{
-		node = node_starts_with(inf->alias, inf->argv[0], '=');
+		node = node_starts_with(inf->alias, inf->arg_v[0], '=');
 		if (!node)
 			return (0);
-		free(inf->argv[0]);
+		free(inf->arg_v[0]);
 		p_add = _strchr(node->str, '=');
 		if (!p_add)
 			return (0);
 		p_add = _strdup(p_add + 1);
 		if (!p_add)
 			return (0);
-		inf->argv[0] = p_add;
+		inf->arg_v[0] = p_add;
 	}
 	return (1);
 }
@@ -105,31 +105,31 @@ int rep_vars(terminfo *inf)
 	int n = 0;
 	list_t *node;
 
-	for (n = 0; inf->argv[n]; n++)
+	for (n = 0; inf->arg_v[n]; n++)
 	{
-		if (inf->argv[n][0] != '$' || !inf->argv[n][1])
+		if (inf->arg_v[n][0] != '$' || !inf->arg_v[n][1])
 			continue;
 
-		if (!_strcmp(inf->argv[n], "$?"))
+		if (!_strcmp(inf->arg_v[n], "$?"))
 		{
-			rep_str(&(inf->argv[n]),
-				_strdup(convert_number(inf->status, 10, 0)));
+			rep_str(&(inf->arg_v[n]),
+				_strdup(convert_number(inf->stat_, 10, 0)));
 			continue;
 		}
-		if (!_strcmp(inf->argv[n], "$$"))
+		if (!_strcmp(inf->arg_v[n], "$$"))
 		{
-			rep_str(&(inf->argv[n]),
+			rep_str(&(inf->arg_v[n]),
 				_strdup(convert_number(getpid(), 10, 0)));
 			continue;
 		}
-		node = node_starts_with(inf->env, &inf->argv[n][1], '=');
+		node = node_starts_with(inf->env, &inf->arg_v[n][1], '=');
 		if (node)
 		{
-			rep_str(&(inf->argv[n]),
+			rep_str(&(inf->arg_v[n]),
 				_strdup(_strchr(node->str, '=') + 1));
 			continue;
 		}
-		rep_str(&inf->argv[n], _strdup(""));
+		rep_str(&inf->arg_v[n], _strdup(""));
 	}
 	return (0);
 }
