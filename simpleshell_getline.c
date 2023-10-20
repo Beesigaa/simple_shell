@@ -53,7 +53,7 @@ ssize_t get_input(terminfo *info)
 	static char *buf; /* the ';' command chain buffer */
 	static size_t i, j, len;
 	ssize_t r = 0;
-	char **buf_p = &(info->arg), *p;
+	char **buf_p = &(info->ar), *p;
 
 	_putchar(BUF_FLUSH);
 	r = input_buf(info, &buf, &len);
@@ -76,7 +76,7 @@ ssize_t get_input(terminfo *info)
 		if (i >= len) /* reached end of buffer? */
 		{
 			i = len = 0; /* reset position and length */
-			info->buf_cmd_type = CMD_NORM;
+			info->buf_type_cmd = CMD_NORM;
 		}
 
 		*buf_p = p; /* pass back pointer to current command position */

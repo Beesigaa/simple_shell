@@ -67,7 +67,7 @@ int find_builtin(terminfo *info)
 	};
 
 	for (i = 0; builtintbl[i].type; i++)
-		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
+		if (_strcmp(info->arg_v[0], builtintbl[i].type) == 0)
 		{
 			info->count_line++;
 			built_in_ret = builtintbl[i].func(info);

@@ -14,18 +14,18 @@ int _ischain(terminfo *inf, char *buf, size_t *p_add)
 	{
 		buf[j] = 0;
 		j++;
-		inf->buf_cmd_type = CMD_OR;
+		inf->buf_type_cmd = CMD_OR;
 	}
 	else if (buf[j] == '&' && buf[j + 1] == '&')
 	{
 		buf[j] = 0;
 		j++;
-		inf->buf_cmd_type = CMD_AND;
+		inf->buf_type_cmd = CMD_AND;
 	}
 	else if (buf[j] == ';')
 	{
 		buf[j] = NULL;
-		inf->buf_cmd_type = CMD_CHAIN;
+		inf->buf_type_cmd = CMD_CHAIN;
 	}
 	else
 		return (0);
@@ -46,7 +46,7 @@ void _checkchain(terminfo *inf, char *buf, size_t *p_add, size_t s, size_t len)
 {
 	size_t j = *p_add;
 
-	if (inf->buf_cmd_type == CMD_AND)
+	if (inf->buf_type_cmd == CMD_AND)
 	{
 		if (inf->stat_)
 		{

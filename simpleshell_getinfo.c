@@ -20,15 +20,15 @@ void set_info(terminfo *info, char **av)
 {
 	int i = 0;
 
-	info->fname = av[0];
+	info->f_name = av[0];
 	if (info->ar)
 	{
-		info->arg_v = strtow(info->ag, " \t");
+		info->arg_v = strtow(info->ar, " \t");
 		if (!info->arg_v)
 		{
 
 			info->arg_v = malloc(sizeof(char *) * 2);
-			if (info->argv)
+			if (info->arg_v)
 			{
 				info->arg_v[0] = _strdup(info->ar);
 				info->arg_v[1] = NULL;
@@ -38,7 +38,7 @@ void set_info(terminfo *info, char **av)
 			;
 		info->argc = i;
 
-		replace_alias(info);
+		rep_al(info);
 		rep_vars(info);
 	}
 }

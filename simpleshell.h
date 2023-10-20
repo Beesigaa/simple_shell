@@ -17,20 +17,14 @@
 #define WRITE_BUF_SIZE 1024
 #define BUF_FLUSH -1
 
-/* for command chaining */
-#define NORM_COMMD	0
-#define OR_COMMD 	1
-#define AND_COMMD	2
-#define CHAIN_COMMD	3
-
-#define CMD_NORM	0
-#define CMD_OR		1
-#define CMD_AND		2
-#define CMD_CHAIN	3
+#define CMD_NORM 0
+#define CMD_OR 1
+#define CMD_AND 2
+#define CMD_CHAIN 3
 
 /* for convert_number() */
-#define LOWERCASE_CONVERTER	1
-#define UNSIGNED_CONVERTER	2
+#define LOWERCASE_CONVERTER 1
+#define UNSIGNED_CONVERTER 2
 
 /* 1 if using system getline() */
 #define _GETLINE 0
