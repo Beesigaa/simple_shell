@@ -14,13 +14,13 @@ char *get_history_file(terminfo *info)
 	dir = _getenv(info, "HOME=");
 	if (!dir)
 		return (NULL);
-	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(HIST_FILE) + 2));
+	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(FILE_HIST) + 2));
 	if (!buf)
 		return (NULL);
 	buf[0] = 0;
 	_strcpy(buf, dir);
 	_strcat(buf, "/");
-	_strcat(buf, HIST_FILE);
+	_strcat(buf, FILE_HIST);
 	return (buf);
 }
 
@@ -95,11 +95,11 @@ int read_history(terminfo *info)
 	if (last != i)
 		build_history_list(info, buf + last, linecount++);
 	free(buf);
-	info->histcount = linecount;
-	while (info->histcount-- >= HIST_MAX)
+	info->hist_count = linecount;
+	while (info->hist_count-- >= HIST_MAX)
 		delete_node_at_index(&(info->history), 0);
 	renumber_history(info);
-	return (info->histcount);
+	return (info->hist_count);
 }
 
 /**
@@ -139,5 +139,5 @@ int renumber_history(terminfo *info)
 		node->num = i++;
 		node = node->next;
 	}
-	return (info->histcount = i);
+	return (info->hist_count = i);
 }

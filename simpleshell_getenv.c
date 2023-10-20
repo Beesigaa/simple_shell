@@ -8,13 +8,13 @@
  */
 char **get_environ(terminfo *info)
 {
-	if (!info->environ || info->env_changed)
+	if (!info->envir || info->env_chang)
 	{
-		info->environ = list_to_strings(info->env);
-		info->env_changed = 0;
+		info->envir = list_to_strings(info->env);
+		info->env_chang = 0;
 	}
 
-	return (info->environ);
+	return (info->envir);
 }
 
 /**
@@ -38,7 +38,7 @@ int _unsetenv(terminfo *info, char *var)
 		p = starts_with(node->str, var);
 		if (p && *p == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), i);
+			info->env_chang = delete_node_at_index(&(info->env), i);
 			i = 0;
 			node = info->env;
 			continue;
@@ -46,7 +46,7 @@ int _unsetenv(terminfo *info, char *var)
 		node = node->next;
 		i++;
 	}
-	return (info->env_changed);
+	return (info->env_chang);
 }
 
 /**
@@ -81,13 +81,13 @@ int _setenv(terminfo *info, char *var, char *value)
 		{
 			free(node->str);
 			node->str = buf;
-			info->env_changed = 1;
+			info->env_chang = 1;
 			return (0);
 		}
 		node = node->next;
 	}
 	add_node_end(&(info->env), buf, 0);
 	free(buf);
-	info->env_changed = 1;
+	info->env_chang = 1;
 	return (0);
 }

@@ -5,7 +5,6 @@
  *
  * Return: allocated string containg history file
  */
-
 char *get_history_file(terminfo *info)
 {
 	char *buf, *dir;
@@ -13,13 +12,13 @@ char *get_history_file(terminfo *info)
 	dir = _getenv(info, "HOME=");
 	if (!dir)
 		return (NULL);
-	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(HIST_FILE) + 2));
+	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(FILE_HIST) + 2));
 	if (!buf)
 		return (NULL);
 	buf[0] = 0;
 	_strcpy(buf, dir);
 	_strcat(buf, "/");
-	_strcat(buf, HIST_FILE);
+	_strcat(buf, FILE_HIST);
 	return (buf);
 }
 
@@ -138,5 +137,5 @@ int renumber_history(terminfo *info)
 		node->num = i++;
 		node = node->next;
 	}
-	return (info->histcount = i);
+	return (info->hist_count = i);
 }

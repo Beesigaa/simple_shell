@@ -84,25 +84,25 @@ int find_builtin(terminfo *info)
  */
 void find_cmd(terminfo *info)
 {
-	char *path = NULL;
+	char *pa = NULL;
 	int i, k;
 
-	info->path = info->arg_v[0];
+	info->pa = info->arg_v[0];
 	if (info->flag_linecount == 1)
 	{
 		info->count_line++;
 		info->flag_linecount = 0;
 	}
-	for (i = 0, k = 0; info->arg[i]; i++)
-		if (!is_delim(info->arg[i], " \t\n"))
+	for (i = 0, k = 0; info->ar[i]; i++)
+		if (!is_delim(info->ar[i], " \t\n"))
 			k++;
 	if (!k)
 		return;
 
-	path = find_path(info, _getenv(info, "PATH="), info->arg_v[0]);
-	if (path)
+	pa = find_path(info, _getenv(info, "PATH="), info->arg_v[0]);
+	if (pa)
 	{
-		info->path = path;
+		info->pa = pa;
 		fork_cmd(info);
 	}
 	else
@@ -110,7 +110,7 @@ void find_cmd(terminfo *info)
 		if ((interactive(info) || _getenv(info, "PATH=")
 			|| info->arg_v[0][0] == '/') && is_cmd(info, info->arg_v[0]))
 			fork_cmd(info);
-		else if (*(info->arg) != '\n')
+		else if (*(info->ar) != '\n')
 		{
 			info->stat_ = 127;
 			print_error(info, "not found\n");
@@ -136,7 +136,7 @@ void fork_cmd(terminfo *info)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(info->path, info->arg_v, get_environ(info)) == -1)
+		if (execve(info->pa, info->arg_v, get_environ(info)) == -1)
 		{
 			free_info(info, 1);
 			if (errno == EACCES)
@@ -146,11 +146,11 @@ void fork_cmd(terminfo *info)
 	}
 	else
 	{
-		wait(&(info->status));
-		if (WIFEXITED(info->status))
+		wait(&(info->stat_));
+		if (WIFEXITED(info->stat_))
 		{
-			info->status = WEXITSTATUS(info->status);
-			if (info->status == 126)
+			info->stat_ = WEXITSTATUS(info->stat_);
+			if (info->stat_ == 126)
 				print_error(info, "Permission denied\n");
 		}
 	}

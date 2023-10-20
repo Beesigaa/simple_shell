@@ -1,5 +1,4 @@
 #include "simpleshell.h"
-
 /**
  * _erratoi - converts a string to an integer
  * @s: the string to be converted
@@ -12,7 +11,7 @@ int _erratoi(char *s)
 	unsigned long int result = 0;
 
 	if (*s == '+')
-		s++;  /* TODO: why does this make main return 255? */
+		s++;
 	for (i = 0;  s[i] != '\0'; i++)
 	{
 		if (s[i] >= '0' && s[i] <= '9')
@@ -37,11 +36,11 @@ int _erratoi(char *s)
  */
 void print_error(terminfo *info, char *estr)
 {
-	_eputs(info->fname);
+	_eputs(info->f_name);
 	_eputs(": ");
-	print_d(info->line_count, STDERR_FILENO);
+	print_d(info->count_line, STDERR_FILENO);
 	_eputs(": ");
-	_eputs(info->argv[0]);
+	_eputs(info->arg_v[0]);
 	_eputs(": ");
 	_eputs(estr);
 }

@@ -1,14 +1,13 @@
 #include "simpleshell.h"
-
 /**
  * clear_info - initializes terminfo struct
  * @info: struct address
  */
 void clear_info(terminfo *info)
 {
-	info->arg = NULL;
-	info->argv = NULL;
-	info->path = NULL;
+	info->ar = NULL;
+	info->arg_v = NULL;
+	info->pa = NULL;
 	info->argc = 0;
 }
 
@@ -22,25 +21,25 @@ void set_info(terminfo *info, char **av)
 	int i = 0;
 
 	info->fname = av[0];
-	if (info->arg)
+	if (info->ar)
 	{
-		info->argv = strtow(info->arg, " \t");
-		if (!info->argv)
+		info->arg_v = strtow(info->ag, " \t");
+		if (!info->arg_v)
 		{
 
-			info->argv = malloc(sizeof(char *) * 2);
+			info->arg_v = malloc(sizeof(char *) * 2);
 			if (info->argv)
 			{
-				info->argv[0] = _strdup(info->arg);
-				info->argv[1] = NULL;
+				info->arg_v[0] = _strdup(info->ar);
+				info->arg_v[1] = NULL;
 			}
 		}
-		for (i = 0; info->argv && info->argv[i]; i++)
+		for (i = 0; info->arg_v && info->arg_v[i]; i++)
 			;
 		info->argc = i;
 
 		replace_alias(info);
-		replace_vars(info);
+		rep_vars(info);
 	}
 }
 
@@ -51,24 +50,24 @@ void set_info(terminfo *info, char **av)
  */
 void free_info(terminfo *info, int all)
 {
-	ffree(info->argv);
-	info->argv = NULL;
-	info->path = NULL;
+	ffree(info->arg_v);
+	info->arg_v = NULL;
+	info->pa = NULL;
 	if (all)
 	{
-		if (!info->cmd_buf)
-			free(info->arg);
+		if (!info->buf_cmd)
+			free(info->ar);
 		if (info->env)
 			free_list(&(info->env));
 		if (info->history)
 			free_list(&(info->history));
 		if (info->alias)
 			free_list(&(info->alias));
-		ffree(info->environ);
-			info->environ = NULL;
-		bfree((void **)info->cmd_buf);
-		if (info->readfd > 2)
-			close(info->readfd);
+		ffree(info->envir);
+			info->envir = NULL;
+		bfree((void **)info->buf_cmd);
+		if (info->readfd_ > 2)
+			close(info->readfd_);
 		_putchar(BUF_FLUSH);
 	}
 }

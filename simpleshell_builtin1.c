@@ -1,26 +1,24 @@
 #include "simpleshell.h"
-
 /**
- * _myhistory - displays the history list, one command by line, preceded
- *              with line numbers, starting at 0.
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
+ * _myhistory - history list, one command by line, preceded
+ *              with line numbers, starting at zero.
+ * @inf: Structure containing potential arguments. Used to maintain
+ *       constant function prototype.
  *  Return: Always 0
  */
-int _myhistory(terminfo *info)
+int _myhistory(terminfo *inf)
 {
-	print_list(info->history);
+	prnt_list(inf->history);
 	return (0);
 }
 
 /**
  * unset_alias - sets alias to string
- * @info: parameter struct
+ * @inf: parameter struct
  * @str: the string alias
- *
- * Return: Always 0 on success, 1 on error
+ * Return: Always 0 on success
  */
-int unset_alias(terminfo *info, char *str)
+int unset_alias(terminfo *inf, char *str)
 {
 	char *p, c;
 	int ret;
@@ -30,8 +28,8 @@ int unset_alias(terminfo *info, char *str)
 		return (1);
 	c = *p;
 	*p = 0;
-	ret = delete_node_at_index(&(info->alias),
-		get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
+	ret = delete_node_at_index(&(inf->alias),
+		get_node_index(inf->alias, node_starts_with(inf->alias, str, -1)));
 	*p = c;
 	return (ret);
 }
@@ -102,13 +100,13 @@ int _myalias(terminfo *info)
 		}
 		return (0);
 	}
-	for (i = 1; info->argv[i]; i++)
+	for (i = 1; info->arg_v[i]; i++)
 	{
-		p = _strchr(info->argv[i], '=');
+		p = _strchr(info->arg_v[i], '=');
 		if (p)
-			set_alias(info, info->argv[i]);
+			set_alias(info, info->arg_v[i]);
 		else
-			print_alias(node_starts_with(info->alias, info->argv[i], '='));
+			print_alias(node_starts_with(info->alias, info->arg_v[i], '='));
 	}
 
 	return (0);

@@ -10,21 +10,21 @@ int _myexit(terminfo *info)
 {
 	int exitcheck;
 
-	if (info->arg_v[1])  /* If there is an exit arguement */
+	if (info->arg_v[1])  /* If an exit arguement is there*/
 	{
 		exitcheck = _erratoi(info->arg_v[1]);
 		if (exitcheck == -1)
 		{
 			info->stat_ = 2;
-			prnt_error(info, "Illegal number: ");
+			print_error(info, "Illegal number: ");
 			_eputs(info->arg_v[1]);
 			_eputchar('\n');
 			return (1);
 		}
-		info->err_num = _erratoi(info->arg_v[1]);
+		info->num_err = _erratoi(info->arg_v[1]);
 		return (-2);
 	}
-	info->err_num = -1;
+	info->num_err = -1;
 	return (-2);
 }
 
@@ -86,7 +86,7 @@ int _myhelp(terminfo *info)
 {
 	char **arg_array;
 
-	arg_array = info->argv;
+	arg_array = info->arg_v;
 	_puts("help call works. Function not yet implemented \n");
 	if (0)
 		_puts(*arg_array); /* temp att_unused workaround */

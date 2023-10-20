@@ -14,7 +14,7 @@ ssize_t input_buf(terminfo *info, char **buf, size_t *len)
 
 	if (!*len) /* if nothing left in the buffer, fill it */
 	{
-		/*bfree((void **)info->cmd_buf);*/
+		/*bfree((void **)info->buf_cmd);*/
 		free(*buf);
 		*buf = NULL;
 		signal(SIGINT, sigintHandler);
@@ -30,13 +30,13 @@ ssize_t input_buf(terminfo *info, char **buf, size_t *len)
 				(*buf)[r - 1] = '\0'; /* remove trailing newline */
 				r--;
 			}
-			info->linecount_flag = 1;
+			info->flag_linecount = 1;
 			remove_comments(*buf);
-			build_history_list(info, *buf, info->histcount++);
-			/* if (_strchr(*buf, ';')) is this a command chain? */
+			build_history_list(info, *buf, info->hist_count++);
+			/* if (_strchr(*buf, ';')) is this a chain command? */
 			{
 				*len = r;
-				info->cmd_buf = buf;
+				info->buf_cmd = buf;
 			}
 		}
 	}
@@ -46,7 +46,6 @@ ssize_t input_buf(terminfo *info, char **buf, size_t *len)
 /**
  * get_input - gets a line minus the newline
  * @info: parameter struct
- *
  * Return: bytes read
  */
 ssize_t get_input(terminfo *info)
@@ -60,15 +59,15 @@ ssize_t get_input(terminfo *info)
 	r = input_buf(info, &buf, &len);
 	if (r == -1) /* EOF */
 		return (-1);
-	if (len)	/* we have commands left in the chain buffer */
+	if (len)	/* commands left in the chain buffer */
 	{
 		j = i; /* init new iterator to current buf position */
 		p = buf + i; /* get pointer for return */
 
-		check_chain(info, buf, &j, i, len);
+		_checkchain(info, buf, &j, i, len);
 		while (j < len) /* iterate to semicolon or end */
 		{
-			if (is_chain(info, buf, &j))
+			if (_ischain(info, buf, &j))
 				break;
 			j++;
 		}
@@ -77,7 +76,7 @@ ssize_t get_input(terminfo *info)
 		if (i >= len) /* reached end of buffer? */
 		{
 			i = len = 0; /* reset position and length */
-			info->cmd_buf_type = CMD_NORM;
+			info->buf_cmd_type = CMD_NORM;
 		}
 
 		*buf_p = p; /* pass back pointer to current command position */
@@ -102,7 +101,7 @@ ssize_t read_buf(terminfo *info, char *buf, size_t *i)
 
 	if (*i)
 		return (0);
-	r = read(info->readfd, buf, READ_BUF_SIZE);
+	r = read(info->readfd_, buf, READ_BUF_SIZE);
 	if (r >= 0)
 		*i = r;
 	return (r);
